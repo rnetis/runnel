@@ -1,0 +1,32 @@
+# Runnel server example — RNL v1, UDP
+[server]
+listen = "0.0.0.0"
+port = 45820
+interface = "rnl0"
+mtu = 1380
+
+[security]
+protocol_version = 1
+cipher = "chacha20-poly1305"
+handshake = "noise-ik"
+replay_window = 4096
+# Optional 32-byte PSK as 64 hex chars; omit for the all-zero PSK.
+# psk = "0011...ff"
+
+[transports]
+udp = true
+tcp = false
+sctp = false
+preferred = "udp"
+fallback = true
+
+[session]
+keepalive_seconds = 25
+rekey_seconds = 600
+rekey_bytes = 1073741824
+
+[[clients]]
+id = "laptop"
+public_key = "MCowBQYDK2VuAyEAjUbF71BdND99EUmpzCA5d2LajdXCKkFchV1ZMFzvFQ4="
+allowed_ips = ["10.100.0.2/32"]
+enabled = true

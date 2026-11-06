@@ -1,0 +1,23 @@
+[package]
+name = "rnl-transport"
+version.workspace = true
+edition.workspace = true
+
+[dependencies]
+rnl-core = { workspace = true }
+tokio = { workspace = true }
+bytes = { workspace = true }
+async-trait = { workspace = true }
+thiserror = { workspace = true }
+tracing = { workspace = true }
+socket2 = { version = "0.5", features = ["all"] }
+
+[target.'cfg(target_os = "linux")'.dependencies]
+libc = "0.2"
+
+[features]
+default = []
+# Linux-only SCTP carrier (SOCK_SEQPACKET, message boundaries from SCTP).
+sctp = []
+# SO_REUSEPORT receive sharding (multi-core workers).
+reuseport = []

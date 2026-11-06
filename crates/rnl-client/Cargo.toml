@@ -1,0 +1,23 @@
+[package]
+name = "rnl-client"
+version.workspace = true
+edition.workspace = true
+
+[dependencies]
+rnl-core = { workspace = true }
+rnl-crypto = { workspace = true }
+rnl-transport = { workspace = true }
+rnl-congestion = { workspace = true }
+rnl-tun = { workspace = true }
+rnl-config = { workspace = true }
+tokio = { workspace = true }
+tracing = { workspace = true }
+thiserror = { workspace = true }
+rand = { workspace = true }
+hex = { workspace = true }
+
+[dev-dependencies]
+rnl-transport = { workspace = true }
+snow = { workspace = true }
+tracing-subscriber = { workspace = true }
+rnl-server = { workspace = true }

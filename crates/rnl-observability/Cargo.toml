@@ -1,0 +1,7 @@
+[package]
+name = "rnl-observability"
+version.workspace = true
+edition.workspace = true
+
+[dependencies]
+rnl-core = { workspace = true }

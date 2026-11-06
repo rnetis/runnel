@@ -1,0 +1,26 @@
+[package]
+name = "rnl-server"
+version.workspace = true
+edition.workspace = true
+
+[features]
+default = []
+# Multi-core UDP receive sharding (SO_REUSEPORT worker loops).
+reuseport = ["rnl-transport/reuseport"]
+
+[dependencies]
+rnl-core = { workspace = true }
+rnl-crypto = { workspace = true }
+rnl-transport = { workspace = true }
+rnl-tun = { workspace = true }
+rnl-config = { workspace = true }
+rnl-observability = { workspace = true }
+tokio = { workspace = true }
+tracing = { workspace = true }
+thiserror = { workspace = true }
+rand = { workspace = true }
+snow = { workspace = true }
+hex = { workspace = true }
+
+[dev-dependencies]
+rnl-client = { workspace = true }

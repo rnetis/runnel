@@ -1,0 +1,14 @@
+[package]
+name = "rnl-tun"
+version.workspace = true
+edition.workspace = true
+
+[dependencies]
+rnl-core = { workspace = true }
+tokio = { workspace = true }
+async-trait = { workspace = true }
+thiserror = { workspace = true }
+tracing = { workspace = true }
+
+[features]
+default = []

@@ -1,0 +1,15 @@
+# Runnel client example — RNL v1, UDP
+[client]
+server = "87.236.166.148:45820"
+private_key = "9df3e7378564af501c3a7a115f9337939fcb99b8aba26b7c31984c6efe6fbe1d"
+interface = "rnl0"
+mtu = 1380
+
+[security]
+protocol_version = 1
+cipher = "chacha20-poly1305"
+handshake = "noise-ik"
+replay_window = 4096
+
+# v0.1: the server's static public key is provided via the RNL_SERVER_KEY
+# environment variable (64 hex chars).

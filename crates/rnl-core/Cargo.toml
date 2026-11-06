@@ -1,0 +1,27 @@
+[package]
+name = "rnl-core"
+version.workspace = true
+edition.workspace = true
+
+[dependencies]
+rnl-crypto = { workspace = true }
+bytes = { workspace = true }
+rand = { workspace = true }
+snow = { workspace = true }
+chacha20poly1305 = "0.10"
+blake2 = "0.10"
+thiserror = { workspace = true }
+tracing = { workspace = true }
+
+[dev-dependencies]
+criterion = { workspace = true }
+hex = { workspace = true }
+rnl-crypto = { workspace = true }
+
+[[bench]]
+name = "codec"
+harness = false
+
+[[bench]]
+name = "session"
+harness = false
