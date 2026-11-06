@@ -29,8 +29,26 @@ impl SlidingWindow {
         }
     }
 
+    /// Returns whether a packet number is fresh without changing the window.
+    /// Call this before authentication, then call check_and_update only
+    /// after the packet has passed AEAD verification. This prevents forged
+    /// high packet numbers from poisoning the replay window.
+    pub fn is_fresh(&self, pn: u64) -> bool {
+        if !self.seen_any {
+            return true;
+        }
+        if pn > self.highest {
+            return true;
+        }
+        let age = self.highest - pn;
+        age < REPLAY_WINDOW && !self.is_set(pn)
+    }
+
     /// Returns true if this packet number is fresh; marks it as seen.
     pub fn check_and_update(&mut self, pn: u64) -> bool {
+        if !self.is_fresh(pn) {
+            return false;
+        }
         if !self.seen_any {
             self.seen_any = true;
             self.highest = pn;
