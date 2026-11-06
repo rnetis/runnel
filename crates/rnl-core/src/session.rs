@@ -160,7 +160,9 @@ fn derive_traffic_key(hash: &[u8], info: &[u8]) -> [u8; 32] {
         if frame_bytes.len() < hdr_len + 16 {
             return Err(Error::TooShort(frame_bytes.len()));
         }
-        if !self.rx_replay.check_and_update(header.packet_no) {
+        // Check freshness without mutating the window. Authentication must
+        // succeed before an attacker-controlled packet number is committed.
+        if !self.rx_replay.is_fresh(header.packet_no) {
             return Err(Error::Replay(header.packet_no));
         }
         let (ct, tag) = frame_bytes[hdr_len..].split_at(frame_bytes.len() - hdr_len - 16);
@@ -173,6 +175,10 @@ fn derive_traffic_key(hash: &[u8], info: &[u8]) -> [u8; 32] {
                 Tag::from_slice(tag),
             )
             .map_err(|_| Error::Aead)?;
+        // Commit the replay-window update only after successful AEAD auth.
+        // open holds exclusive mutable access to this session, so the
+        // freshness check and commit cannot race with another packet.
+        debug_assert!(self.rx_replay.check_and_update(header.packet_no));
         self.bytes_rx += frame_bytes.len() as u64;
         self.last_seen = Instant::now();
         Ok(buf)
@@ -264,6 +270,16 @@ mod tests {
             server.open(&wire),
             Err(Error::SessionMismatch { .. })
         ));
+    }
+
+    #[test]
+    fn unauthenticated_high_packet_number_cannot_poison_replay_window() {
+        let (mut client, mut server) = active_pair();
+        let valid = client.seal(frame::DATA, b"valid packet").unwrap();
+        let mut forged = valid.clone();
+        forged[16..24].copy_from_slice(&u64::MAX.to_be_bytes());
+        assert!(matches!(server.open(&forged), Err(Error::Aead)));
+        assert_eq!(server.open(&valid).unwrap(), b"valid packet");
     }
 
     #[test]
